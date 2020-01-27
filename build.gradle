@@ -1,0 +1,32 @@
+plugins {
+  //inlude the nodeJS plugin to execute nodejs and npm tasks
+  id "com.moowork.node" version "1.2.0"
+}
+
+node {
+	download = true
+	version = "9.11.1"
+	npmVersion = "5.6.0"
+}
+
+//declare a build task
+task build
+
+//declare a task to create a zip of the app
+task zip(type: Zip) {
+	from ('.') {
+		include "*"
+		include "build/**"
+		include "node_modules/**"
+		include "config/**"
+		include "src/**"
+		include "static/**"
+	}
+	destinationDir(file("dist"))
+	baseName "thoughtworks"
+}
+
+//declare task dependencies
+build.dependsOn zip
+zip.dependsOn npm_run_build
+npm_run_build.dependsOn npmInstall
